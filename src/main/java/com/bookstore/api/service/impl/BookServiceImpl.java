@@ -11,6 +11,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +34,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public List<BookResponseDTO> getAllBooks() {
-        return List.of();
+        return bookRepo.findAll().stream()
+                .map(bookMapper::toResponseDTO)
+                .collect(Collectors.toList());
     }
 
     @Override
