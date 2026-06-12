@@ -29,4 +29,10 @@ public class BookController {
         List<BookResponseDTO> books = bookService.getAllBooks();
         return ResponseEntity.ok(books);
     }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<BookResponseDTO> getBookById(@PathVariable String id) {
+        BookResponseDTO book = bookService.getBookById(id);
+        return ResponseEntity.ok(book);
+    }
 }
