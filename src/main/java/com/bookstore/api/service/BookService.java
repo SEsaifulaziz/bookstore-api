@@ -1,0 +1,19 @@
+package com.bookstore.api.service;
+
+import com.bookstore.api.dto.BookRequestDTO;
+import com.bookstore.api.dto.BookResponseDTO;
+
+import java.util.List;
+
+public interface BookService {
+
+    BookResponseDTO createBook(BookRequestDTO bookRequestDTO);
+
+    List<BookResponseDTO> getAllBooks();
+
+    BookResponseDTO getBookById(String id);
+
+    BookResponseDTO updateBook(String id, BookRequestDTO bookRequestDTO);
+
+    void deleteBook(String id);
+}
