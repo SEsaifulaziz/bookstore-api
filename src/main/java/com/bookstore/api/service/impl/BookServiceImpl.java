@@ -67,8 +67,12 @@ public class BookServiceImpl implements BookService {
         Book updatedBook = bookRepo.save(existingBook);
         return bookMapper.toResponseDTO(updatedBook);
     }
+
     @Override
     public void deleteBook(String id) {
-
+        if (!bookRepo.existsById(id)) {
+            throw new ResourceNotFoundException("Cannot delete. Book not found with ID: " + id);
+        }
+        bookRepo.deleteById(id);
     }
 }
