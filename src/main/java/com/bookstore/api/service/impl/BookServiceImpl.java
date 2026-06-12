@@ -49,9 +49,24 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDTO updateBook(String id, BookRequestDTO dto) {
-        return null;
-    }
+        Book existingBook = bookRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with ID: " + id));
 
+        // 🎯 Guard Clause: If ISBN is changing, make sure the new one isn't taken
+        if (!existingBook.getIsbn().equals(dto.isbn()) && bookRepo.existsByIsbn(dto.isbn())) {
+            throw new DuplicateResourceException("Cannot update. ISBN '" + dto.isbn() + "' belongs to another book.");
+        }
+
+        // Apply modifications
+        existingBook.setTitle(dto.title());
+        existingBook.setAuthor(dto.author());
+        existingBook.setPrice(dto.price());
+        existingBook.setIsbn(dto.isbn());
+        existingBook.setPublishedDate(dto.publishedDate());
+
+        Book updatedBook = bookRepo.save(existingBook);
+        return bookMapper.toResponseDTO(updatedBook);
+    }
     @Override
     public void deleteBook(String id) {
 
