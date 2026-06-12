@@ -4,6 +4,7 @@ import com.bookstore.api.Repository.BookRepository;
 import com.bookstore.api.dto.BookRequestDTO;
 import com.bookstore.api.dto.BookResponseDTO;
 import com.bookstore.api.exception.DuplicateResourceException;
+import com.bookstore.api.exception.ResourceNotFoundException;
 import com.bookstore.api.mapper.BookMapper;
 import com.bookstore.api.model.Book;
 import com.bookstore.api.service.BookService;
@@ -41,7 +42,9 @@ public class BookServiceImpl implements BookService {
 
     @Override
     public BookResponseDTO getBookById(String id) {
-        return null;
+        Book book = bookRepo.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Book not found with ID: " + id));
+        return bookMapper.toResponseDTO(book);
     }
 
     @Override
