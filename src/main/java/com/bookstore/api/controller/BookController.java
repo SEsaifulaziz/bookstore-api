@@ -35,4 +35,12 @@ public class BookController {
         BookResponseDTO book = bookService.getBookById(id);
         return ResponseEntity.ok(book);
     }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<BookResponseDTO> updateBook(
+            @PathVariable String id,
+            @Valid @RequestBody BookRequestDTO bookRequestDTO) {
+        BookResponseDTO updatedBook = bookService.updateBook(id, bookRequestDTO);
+        return ResponseEntity.ok(updatedBook);
+    }
 }
