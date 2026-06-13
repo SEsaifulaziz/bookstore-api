@@ -9,7 +9,7 @@ public interface BookService {
 
     BookResponseDTO createBook(BookRequestDTO bookRequestDTO);
 
-    List<BookResponseDTO> getAllBooks();
+    List<BookResponseDTO> getAllBooks(int page, int size, String sortBy, String title);
 
     BookResponseDTO getBookById(String id);
 
