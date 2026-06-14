@@ -9,10 +9,10 @@ import com.bookstore.api.mapper.BookMapper;
 import com.bookstore.api.model.Book;
 import com.bookstore.api.service.BookService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -34,10 +34,25 @@ public class BookServiceImpl implements BookService {
     }
 
     @Override
-    public List<BookResponseDTO> getAllBooks() {
-        return bookRepo.findAll().stream()
-                .map(bookMapper::toResponseDTO)
-                .collect(Collectors.toList());
+    public Page<BookResponseDTO> getAllBooks(int page, int size, String sortBy, String title) {
+        Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
+
+        Book probe = new Book();
+
+        //for Configuring a dynamic matching strategy (e.g, matching partial text case-insensitively)
+        ExampleMatcher matcher = ExampleMatcher.matchingAll()
+                .withIgnoreCase()
+                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+
+        if(title != null && title.trim().isEmpty()) {
+            probe.setTitle(title.trim());
+        }
+
+        Example<Book> example = Example.of(probe, matcher);
+
+        Page<Book> bookPage = bookRepo.findAll(example, pageable);
+
+        return bookPage.map(bookMapper::toResponseDTO);
     }
 
     @Override
