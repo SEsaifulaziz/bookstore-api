@@ -10,9 +10,14 @@ import com.bookstore.api.model.Book;
 import com.bookstore.api.service.BookService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.*;
+import org.springframework.data.mongodb.core.MongoTemplate;
+import org.springframework.data.mongodb.core.query.Criteria;
+import org.springframework.data.mongodb.core.query.Query;
+import org.springframework.data.support.PageableExecutionUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,6 +25,7 @@ public class BookServiceImpl implements BookService {
 
     private final BookRepository bookRepo;
     private final BookMapper bookMapper;
+    private final MongoTemplate mongoTemplate;
 
     @Override
     public BookResponseDTO createBook(BookRequestDTO dto) {
@@ -37,22 +43,25 @@ public class BookServiceImpl implements BookService {
     public Page<BookResponseDTO> getAllBooks(int page, int size, String sortBy, String title) {
         Pageable pageable = PageRequest.of(page, size, Sort.by(sortBy).ascending());
 
-        Book probe = new Book();
-
-        //for Configuring a dynamic matching strategy (e.g, matching partial text case-insensitively)
-        ExampleMatcher matcher = ExampleMatcher.matchingAll()
-                .withIgnoreCase()
-                .withStringMatcher(ExampleMatcher.StringMatcher.CONTAINING);
+        Query query = new Query().with(pageable);
 
         if(title != null && title.trim().isEmpty()) {
-            probe.setTitle(title.trim());
+            query.addCriteria(Criteria.where("title").regex(".*" + title.trim() + ".*" + ".*" + "i"));
         }
 
-        Example<Book> example = Example.of(probe, matcher);
+        List<Book> books = mongoTemplate.find(query, Book.class);
 
-        Page<Book> bookPage = bookRepo.findAll(example, pageable);
+        // Map documents to DTOs
+        List<BookResponseDTO> dtos = books.stream()
+                .map(bookMapper::toResponseDTO)
+                .collect(Collectors.toList());
 
-        return bookPage.map(bookMapper::toResponseDTO);
+        // Standard Spring Data Page generation wrapper that preserves total counts flawlessly
+        return PageableExecutionUtils.getPage(
+                dtos,
+                pageable,
+                () -> mongoTemplate.count(Query.of(query).limit(-1).skip(-1), Book.class)
+        );
     }
 
     @Override
