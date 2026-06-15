@@ -5,6 +5,7 @@ import com.bookstore.api.dto.BookResponseDTO;
 import com.bookstore.api.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -25,8 +26,13 @@ public class BookController {
     }
 
     @GetMapping
-    public ResponseEntity<List<BookResponseDTO>> getAllBooks() {
-        List<BookResponseDTO> books = bookService.getAllBooks();
+    public ResponseEntity<Page<BookResponseDTO>> getAllBooks(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "title") String sortBy,
+            @RequestParam(required = false) String title) {
+
+        Page<BookResponseDTO> books = bookService.getAllBooks(page, size, sortBy, title);
         return ResponseEntity.ok(books);
     }
 
