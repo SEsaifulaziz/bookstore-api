@@ -1,7 +1,7 @@
 package com.bookstore.api.mapper;
 
-import com.bookstore.api.dto.BookRequestDTO;
-import com.bookstore.api.dto.BookResponseDTO;
+import com.bookstore.api.dto.request.BookRequestDTO;
+import com.bookstore.api.dto.response.BookResponseDTO;
 import com.bookstore.api.model.Book;
 import org.springframework.stereotype.Component;
 

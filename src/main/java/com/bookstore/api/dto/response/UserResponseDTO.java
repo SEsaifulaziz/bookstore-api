@@ -1,4 +1,4 @@
-package com.bookstore.api.dto;
+package com.bookstore.api.dto.response;
 
 import java.util.List;
 

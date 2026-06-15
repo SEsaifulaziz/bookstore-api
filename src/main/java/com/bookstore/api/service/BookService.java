@@ -1,10 +1,8 @@
 package com.bookstore.api.service;
 
-import com.bookstore.api.dto.BookRequestDTO;
-import com.bookstore.api.dto.BookResponseDTO;
+import com.bookstore.api.dto.request.BookRequestDTO;
+import com.bookstore.api.dto.response.BookResponseDTO;
 import org.springframework.data.domain.Page;
-
-import java.util.List;
 
 public interface BookService {
 

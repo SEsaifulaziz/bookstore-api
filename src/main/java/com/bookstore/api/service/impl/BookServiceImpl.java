@@ -1,8 +1,8 @@
 package com.bookstore.api.service.impl;
 
 import com.bookstore.api.Repository.BookRepository;
-import com.bookstore.api.dto.BookRequestDTO;
-import com.bookstore.api.dto.BookResponseDTO;
+import com.bookstore.api.dto.request.BookRequestDTO;
+import com.bookstore.api.dto.response.BookResponseDTO;
 import com.bookstore.api.exception.DuplicateResourceException;
 import com.bookstore.api.exception.ResourceNotFoundException;
 import com.bookstore.api.mapper.BookMapper;

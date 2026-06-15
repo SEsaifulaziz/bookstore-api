@@ -1,7 +1,7 @@
 package com.bookstore.api.controller;
 
-import com.bookstore.api.dto.BookRequestDTO;
-import com.bookstore.api.dto.BookResponseDTO;
+import com.bookstore.api.dto.request.BookRequestDTO;
+import com.bookstore.api.dto.response.BookResponseDTO;
 import com.bookstore.api.service.BookService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -9,8 +9,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
