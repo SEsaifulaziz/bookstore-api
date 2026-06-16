@@ -7,10 +7,11 @@ import com.bookstore.api.dto.response.UserResponseDTO;
 import com.bookstore.api.exception.DuplicateResourceException;
 import com.bookstore.api.mapper.UserMapper;
 import com.bookstore.api.model.User;
-import com.bookstore.api.service.BookService;
 import com.bookstore.api.service.UserService;
-import jdk.jshell.spi.ExecutionControl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -35,8 +36,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public List<UserResponseDTO> getAllUsers() {
-        return List.of();
+    public Page<UserResponseDTO> getAllUsers(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+
+        Page<User>  users = userRepo.findAll(pageable);
+
+        return users.map(userMapper::toResponseDTO);
     }
 
     @Override
