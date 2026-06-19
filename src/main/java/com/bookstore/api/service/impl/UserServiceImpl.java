@@ -5,6 +5,7 @@ import com.bookstore.api.Repository.UserRepository;
 import com.bookstore.api.dto.request.UserRequestDTO;
 import com.bookstore.api.dto.response.UserResponseDTO;
 import com.bookstore.api.exception.DuplicateResourceException;
+import com.bookstore.api.exception.ResourceNotFoundException;
 import com.bookstore.api.mapper.UserMapper;
 import com.bookstore.api.model.User;
 import com.bookstore.api.service.UserService;
@@ -46,7 +47,22 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserResponseDTO addBookToUser(String userId, String bookId) {
-        return null;
+        // 1. Verify user profile exists
+        User user = userRepo.findById(userId)
+                .orElseThrow(() -> new ResourceNotFoundException("User not found with ID: " + userId));
+
+        // 2. Verify target book exists before creating an association
+        if (!bookRepo.existsById(bookId)) {
+            throw new ResourceNotFoundException("Cannot associate. Book not found with ID: " + bookId);
+        }
+
+        // 3. Prevent duplicate listings in the user's reference array
+        if (!user.getOwnedBookIds().contains(bookId)) {
+            user.getOwnedBookIds().add(bookId);
+            userRepo.save(user);
+        }
+
+        return userMapper.toResponseDTO(user);
     }
 
 
