@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BookHaven Admin - Premium Book & User Registry</title>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Custom Style Sheet -->
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- Header -->
+        <header>
+            <div class="brand-section">
+                <i class="fa-solid fa-book-open brand-icon"></i>
+                <div>
+                    <h1>BookHaven Admin</h1>
+                    <p>High-Performance Bookstore Management System</p>
+                </div>
+            </div>
+            <div style="display: flex; gap: 0.75rem;">
+                <a href="/swagger-ui/index.html" target="_blank" class="btn btn-secondary" id="btn-swagger">
+                    <i class="fa-solid fa-code"></i> API Swagger Docs
+                </a>
+            </div>
+        </header>
+
+        <!-- Stats Overview Cards -->
+        <section class="stats-row">
+            <div class="glass-panel stat-card violet">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-book"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value" id="stats-books">0</span>
+                    <span class="stat-label">Total Books</span>
+                </div>
+            </div>
+            <div class="glass-panel stat-card indigo">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-users"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value" id="stats-users">0</span>
+                    <span class="stat-label">Registered Users</span>
+                </div>
+            </div>
+            <div class="glass-panel stat-card teal">
+                <div class="stat-icon">
+                    <i class="fa-solid fa-handshake"></i>
+                </div>
+                <div class="stat-info">
+                    <span class="stat-value" id="stats-loans">0</span>
+                    <span class="stat-label">Assigned Books</span>
+                </div>
+            </div>
+        </section>
+
+        <!-- Navigation Tabs -->
+        <nav class="glass-panel tabs-navigation">
+            <button class="tab-btn active" data-tab="tab-books">
+                <i class="fa-solid fa-book"></i> Books Catalog
+            </button>
+            <button class="tab-btn" data-tab="tab-users">
+                <i class="fa-solid fa-users"></i> User Directory
+            </button>
+            <button class="tab-btn" data-tab="tab-relations">
+                <i class="fa-solid fa-link"></i> Book Associations
+            </button>
+        </nav>
+
+        <!-- Tab 1: Books Catalog -->
+        <div id="tab-books" class="tab-content active">
+            <div class="section-actions">
+                <div class="search-wrapper">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" id="search-book-title" class="search-input" placeholder="Search books by title...">
+                </div>
+                <div style="display: flex; gap: 1rem; align-items: center; flex-wrap: wrap;">
+                    <div class="sort-wrapper">
+                        <label for="sort-books">Sort by:</label>
+                        <select id="sort-books" class="sort-select">
+                            <option value="title">Title (A-Z)</option>
+                            <option value="author">Author</option>
+                            <option value="price">Price</option>
+                            <option value="publishedDate">Publish Date</option>
+                        </select>
+                    </div>
+                    <button class="btn btn-primary" id="btn-add-book">
+                        <i class="fa-solid fa-plus"></i> Add Book
+                    </button>
+                </div>
+            </div>
+
+            <!-- Books Grid Container -->
+            <div class="books-grid" id="books-grid-container">
+                <!-- Dynamically loaded -->
+            </div>
+
+            <!-- Books Pagination -->
+            <div class="pagination" id="books-pagination-container">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Tab 2: User Directory -->
+        <div id="tab-users" class="tab-content">
+            <div class="section-actions">
+                <h2 style="font-family: var(--font-header); font-size: 1.5rem; font-weight: 600;">Registered Users</h2>
+                <button class="btn btn-primary" id="btn-add-user">
+                    <i class="fa-solid fa-user-plus"></i> Register User
+                </button>
+            </div>
+
+            <!-- Users Grid Container -->
+            <div class="users-grid" id="users-grid-container">
+                <!-- Dynamically loaded -->
+            </div>
+
+            <!-- Users Pagination -->
+            <div class="pagination" id="users-pagination-container">
+                <!-- Dynamically loaded -->
+            </div>
+        </div>
+
+        <!-- Tab 3: Relations / Book Associations -->
+        <div id="tab-relations" class="tab-content">
+            <div class="glass-panel association-panel">
+                <div style="text-align: center; margin-bottom: 2rem;">
+                    <i class="fa-solid fa-link" style="font-size: 2.5rem; color: var(--accent-indigo); margin-bottom: 0.75rem;"></i>
+                    <h2 style="font-family: var(--font-header); font-weight: 700;">Establish Book Ownership</h2>
+                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Associate an existing book from the catalog to a registered user profile.</p>
+                </div>
+
+                <form id="form-association">
+                    <div class="form-group">
+                        <label for="assoc-user-select">Select User Profile</label>
+                        <select id="assoc-user-select" class="form-control" required>
+                            <option value="" disabled selected>Choose a user...</option>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="assoc-book-select">Select Book to Assign</label>
+                        <select id="assoc-book-select" class="form-control" required>
+                            <option value="" disabled selected>Choose a book...</option>
+                            <!-- Dynamically loaded -->
+                        </select>
+                    </div>
+
+                    <div style="margin-top: 2rem;">
+                        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 0.85rem;">
+                            <i class="fa-solid fa-circle-check"></i> Assign Book Ownership
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal 1: Add / Edit Book -->
+    <div class="modal-overlay" id="modal-book">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h2 id="modal-book-title">Add New Book</h2>
+                <button class="modal-close" id="modal-book-close">&times;</button>
+            </div>
+            <form id="form-book" novalidate>
+                <input type="hidden" id="book-id">
+                
+                <div class="form-group">
+                    <label for="book-title">Book Title</label>
+                    <input type="text" id="book-title" class="form-control" placeholder="e.g. The Pragmatic Programmer" maxlength="100" required>
+                    <div class="invalid-feedback">Title is required (max 100 characters).</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="book-author">Author Name</label>
+                    <input type="text" id="book-author" class="form-control" placeholder="e.g. Andy Hunt" maxlength="50" required>
+                    <div class="invalid-feedback">Author is required (max 50 characters).</div>
+                </div>
+
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                    <div class="form-group">
+                        <label for="book-price">Price ($)</label>
+                        <input type="number" id="book-price" class="form-control" placeholder="e.g. 39.99" step="0.01" min="0.01" required>
+                        <div class="invalid-feedback">Must be positive.</div>
+                    </div>
+                    <div class="form-group">
+                        <label for="book-isbn">ISBN Code</label>
+                        <input type="text" id="book-isbn" class="form-control" placeholder="e.g. 9780135957059" minlength="10" maxlength="13" required>
+                        <div class="invalid-feedback">Must be 10-13 characters.</div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label for="book-published">Published Date</label>
+                    <input type="date" id="book-published" class="form-control" required>
+                    <div class="invalid-feedback">Date must be in past or present.</div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-book-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary" id="btn-book-submit">Save Book</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Modal 2: Register User -->
+    <div class="modal-overlay" id="modal-user">
+        <div class="glass-panel modal-content">
+            <div class="modal-header">
+                <h2>Register User Profile</h2>
+                <button class="modal-close" id="modal-user-close">&times;</button>
+            </div>
+            <form id="form-user" novalidate>
+                <div class="form-group">
+                    <label for="user-name">User's Full Name</label>
+                    <input type="text" id="user-name" class="form-control" placeholder="e.g. Alice Smith" maxlength="50" required>
+                    <div class="invalid-feedback">Name is required (max 50 characters).</div>
+                </div>
+
+                <div class="form-group">
+                    <label for="user-email">Email Address</label>
+                    <input type="email" id="user-email" class="form-control" placeholder="e.g. alice@example.com" required>
+                    <div class="invalid-feedback">Provide a valid email address.</div>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" id="btn-user-cancel">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Create User</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Alerts Container -->
+    <div class="toast-container" id="toast-container"></div>
+
+    <!-- App Script -->
+    <script src="js/app.js"></script>
+</body>
+</html>
